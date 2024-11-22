@@ -92,7 +92,7 @@
   <div id="myDiagramDiv"></div>
 <script>
 
-fetch('http://127.0.0.1:3000/api/carregar')
+fetch('https://organograma.onrender.com/api/carregar')
   .then(response => {
     if (!response.ok) {
       throw new Error('Erro ao carregar dados da API');
@@ -108,7 +108,7 @@ fetch('http://127.0.0.1:3000/api/carregar')
   });
 
 
-fetch('http://127.0.0.1:3000/users', {
+fetch('https://organograma.onrender.com/users', {
   method: 'GET',
   mode: 'cors', 
   headers: {
@@ -127,10 +127,8 @@ fetch('http://127.0.0.1:3000/users', {
 })
 .catch(error => console.error('Erro ao carregar usuários:', error));
 
-
-
 function loadOrganogramaData() {
-    return fetch('http://127.0.0.1:3000/api/carregar', {
+    return fetch('https://organograma.onrender.com/api/carregar', {
         method: 'GET',
         mode: 'cors',
         headers: {
@@ -430,7 +428,7 @@ function expandAll() {
 
     console.log("Dados a serem enviados (raw):", dados);
 
-    fetch('http://127.0.0.1:3000/api/salvar', {
+    fetch('https://organograma.onrender.com/api/salvar', {
         method: 'POST',
         mode: 'cors',
         headers: {

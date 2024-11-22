@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="style.css">
+  <script src="https://unpkg.com/gojs/release/go.js"></script>
+  <style>
+    #myDiagramDiv {
+      width: 100%;
+      height: 600px;
+      border: 1px solid black;
+      background-image: url('Fundo Organograma.png');
+      background-size: contain;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-color: #2C2484;
+    }
+    .modal {
+      display: flex; 
+      position: fixed;
+      z-index: 10;  
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background: #201b2c
+      
+    }
+    .modal-content {
+      background: #2f2841;
+      padding: 30px 35px;
+      border-radius: 10px;
+      width: 60%;
+      text-align: center;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      border-radius: 20px;
+      box-shadow: 0px 10px 40px #00000056;
+    }
+    #myDiagramDiv {
+      display: none; 
+      width: 100%;
+      height: 750px;
+      border: 1px solid black;
+      background-image: url('Fundo Organograma.png');
+      background-size: contain;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-color: #2C2484;
+    }
+    .top-right-image {
+      position: absolute;
+      top: 20px; 
+      right: 0px; 
+      z-index: 20;
+    }
+    .top-right-image img {
+      max-width: 140px; 
+      height: auto;
+    }
+  </style>
+</head>
+<body>
+    <div class="button-container">
+      <button id="expandAll">Expandir Todos</button> 
+      <button id="collapseAll">Recolher Todos</button>
+      <button id="expandSupervisores">Expandir Supervisores</button>
+    </div>
+  <div id="employeeCount">Total de Funcionários: 0</div> 
+  <div class="top-right-image" id="legendImage">
+    <img src="Legenda.png" alt="Legenda Organograma" />
+  </div>
+  <div id="loginModal" class="modal">
+    <div class="modal-content">
+      <h1>Visualize ou<br>Edite nosso Organograma</h1>
+      <h2>Login</h2>
+    <div class="textfield">
+      <label for="username">Usuário</label>
+      <input type="text" id="username" placeholder="Usuário"><br>
+    </div> 
+      <div class="textfield">
+        <label for="password">Senha</label>
+        <input type="password" id="password" placeholder="Senha"><br>
+      </div>
+      <button class="btn-login" onclick="validateLogin()">Entrar</button>
+      <p id="loginError" style="display: none; color: red;">Credenciais incorretas</p>
+      <button class="btn-login" onclick="enterViewMode()">Entrar sem login (modo de visualização)</button>
+    </div>
+  </div>
+  <div id="myDiagramDiv"></div>
+<script>
+
+fetch('https://wagnerjunior3121.github.io/Organograma/api/carregar')
+  .then(response => {
+    if (!response.ok) {
+      throw new Error('Erro ao carregar dados da API');
+    }
+    return response.json();
+  })
+  .then(data => {
+    console.log("Dados recebidos no frontend:", data.dados);
+    diagram.model = new go.TreeModel(data.dados);
+  })
+  .catch(error => {
+    console.error("Erro ao carregar os dados do organograma:", error);
+  });
+
+
+fetch('https://wagnerjunior3121.github.io/Organograma/users', {
+  method: 'GET',
+  mode: 'cors', 
+  headers: {
+    'Content-Type': 'application/json',
+  }
+})
+.then(response => {
+  if (!response.ok) {
+    throw new Error('Erro ao carregar usuários');
+  }
+  return response.json();
+})
+.then(data => {
+  users = data; 
+  console.log(users);
+})
+.catch(error => console.error('Erro ao carregar usuários:', error));
+
+
+
+function loadOrganogramaData() {
+    return fetch('https://wagnerjunior3121.github.io/Organograma/api/carregar', {
+        method: 'GET',
+        mode: 'cors',
+        headers: {
+            'Content-Type': 'application/json',
+        }
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Erro ao carregar dados do organograma');
+        }
+        return response.json();
+    })
+    .then(data => {
+        organogramaData = data.dados; 
+        console.log("Dados carregados:", organogramaData);
+    })
+    .catch(error => console.error('Erro ao carregar dados do organograma:', error));
+}
+
+
+function validateLogin() {
+  const username = document.getElementById('username').value;
+  const password = document.getElementById('password').value;
+  
+  const validUser = users.find(user => user.username === username && user.password === password);
+
+  if (validUser) {
+    document.getElementById('loginModal').style.display = "none";  
+    document.getElementById('myDiagramDiv').style.display = "block";  
+    document.getElementById("legendImage").style.display = "block";
+    
+    let editableKeys = [];
+    let canAddEmployees = false;
+
+    if (username === "Cristiano") {
+      editableKeys = [1, 2, 3, 4, 5, 6, 7, 8, 78];  
+      canAddEmployees = true;  
+    } else {
+      switch (username) {
+        case "Tiago Passos":
+          editableKeys = [8];
+          break;
+        case "Fernando":
+          editableKeys = [2];
+          break;
+        case "Lindomar":
+          editableKeys = [3];
+          break;
+        case "Lucas":
+          editableKeys = [4];
+          break;
+        case "Paulo":
+          editableKeys = [5];
+          break;
+        case "Stefano":
+          editableKeys = [6];
+          break;
+        case "Tiago Roberto":
+          editableKeys = [7];
+          break;
+        default:
+          editableKeys = [];
+          break;
+      }
+    }
+
+    loadOrganogramaData().then(() => {
+      init(true, editableKeys, canAddEmployees); 
+    }).catch(error => {
+      console.error("Erro ao carregar os dados:", error);
+    });
+  } else {
+    document.getElementById('loginError').style.display = "block"; 
+  }
+}
+
+function enterViewMode() {
+    document.getElementById('loginModal').style.display = "none";  
+    document.getElementById('myDiagramDiv').style.display = "block";  
+    document.getElementById("legendImage").style.display = "block";
+
+    loadOrganogramaData().then(() => {
+        init(false); 
+    }).catch(error => {
+        console.error("Erro ao carregar os dados:", error);
+    });
+}
+window.onload = function() {
+    document.getElementById('loginModal').style.display = "flex";
+    document.getElementById("legendImage").style.display = "none";
+};
+
+let diagram; 
+
+function init(editable, editableKeys = [], canAddEmployees = false) {
+    const $ = go.GraphObject.make;
+
+    diagram = $(go.Diagram, "myDiagramDiv", {
+        "undoManager.isEnabled": editable,
+        layout: $(go.TreeLayout, { angle: 90, layerSpacing: 35 }),
+        allowDelete: editable,
+        allowInsert: editable,
+        isReadOnly: !editable,
+    });
+
+    if (organogramaData && organogramaData.length > 0) {
+        diagram.model = new go.TreeModel(organogramaData); 
+        console.log("Modelo carregado no diagrama:", diagram.model.nodeDataArray);
+    } else {
+        console.warn("Os dados do organograma estão vazios!");
+    }
+
+    if (canAddEmployees) {
+        document.getElementById("expandAll").onclick = expandAll;
+        document.getElementById("collapseAll").onclick = collapseAll;
+        document.getElementById("expandSupervisores").onclick = expandSupervisores;
+    }
+
+    diagram.addDiagramListener("ObjectSingleClicked", function (e) {
+        const node = e.subject.part;
+        if (node instanceof go.Node) {
+            if (!editableKeys.includes(node.data.key)) {
+                e.handled = true;
+            }
+        }
+    });
+
+    diagram.addModelChangedListener(function (e) {
+        if (e.modelChange === "nodeDataArray") {
+            e.changes.each(function (change) {
+                if (change instanceof go.Change) {
+                    const nodeData = change.model.findNodeData(change.key);
+                    if (nodeData && !editableKeys.includes(nodeData.key)) {
+                        diagram.model.undo();
+                    }
+                }
+            });
+        }
+    });
+
+
+function expandSupervisores() {
+    const supervisorKeys = [1, 2, 3, 4, 5, 6, 7, 8, 78];
+    supervisorKeys.forEach(function(key) {
+      const node = diagram.findNodeForKey(key);
+      if (node) {
+        node.expandTree(1); 
+      }
+    });
+    supervisorKeys.forEach(function(key) {
+      const node = diagram.findNodeForKey(key);
+      if (node) {
+        node.findTreeChildrenNodes().each(function(child) {
+          child.collapseTree(1);
+        });
+      }
+    });
+  }
+
+function expandAll() {
+    const keysToExpand = [1, 2, 3, 4, 5, 6, 7, 8, 78];
+    keysToExpand.forEach(function(key) {
+        const node = diagram.findNodeForKey(key);  
+        if (node) {
+            expandNodeAndChildren(node);  
+        }
+    });
+}
+
+  function expandNodeAndChildren(node) {
+    node.expandTree(1); 
+    }
+
+  function collapseAll() {
+      diagram.findTreeRoots().each(function(root) {
+      collapseNodeAndChildren(root);
+      });
+      }
+
+  function collapseNodeAndChildren(node) {
+    node.collapseTree(1); 
+}
+
+    diagram.model = new go.TreeModel(organogramaData );
+    document.getElementById("expandSupervisores").onclick = expandSupervisores;
+    document.getElementById("expandAll").onclick = expandAll
+    document.getElementById("collapseAll").onclick = collapseAll
+    
+    function contarNos(parentKey) {
+        let count = 0;
+        diagram.model.nodeDataArray.forEach(node => {
+          if (node.parent === parentKey) {
+            count++;
+          }
+        });
+        return count;
+      }
+    function contarFuncionarios(parentKey) {
+    let countMecanicos = 0;
+    let countAnalistas = 0;
+    let countTorneiros = 0;
+    let countEletricistas = 0;
+    let countSupervisores = 0;
+    let countEstagiarios = 0;
+    let countPedreiros = 0;
+    let countPintores = 0;
+    let countSoldadores = 0;
+    let countMonitores = 0;
+    let countHigienizadores = 0;
+    
+    diagram.model.nodeDataArray.forEach(node => {
+            if (node.parent === parentKey) {
+            if (node.title.toLowerCase().includes("mecânico")) {
+                countMecanicos++;
+            }
+            if (node.title.toLowerCase().includes("analista")) {
+                countAnalistas++;
+            }
+            if (node.title.toLowerCase().includes("torneiro")) {
+                countTorneiros++;
+            }
+            if (node.title.toLowerCase().includes("eletricista")) {
+                countEletricistas++;
+            }
+            if (node.title.toLowerCase().includes("supervisor") && node.key !== 78) {
+                countSupervisores++;
+            }
+            if (node.title.toLowerCase().includes("estagiário")) {
+                countEstagiarios++;
+            }
+            if (node.title.toLowerCase().includes("pedreiro")) {
+              countPedreiros++;
+            }
+            if (node.title.toLowerCase().includes("pintor")) {
+              countPintores++;
+            }
+            if (node.title.toLowerCase().includes("soldador")) {
+              countSoldadores++;
+            }
+            if (node.title.toLowerCase().includes("monitor")) {
+              countMonitores++;
+            }
+            if (node.title.toLowerCase().includes("auxiliar")) {
+              countHigienizadores++;
+            }
+        }
+    });
+    if (parentKey === 7) {
+    return { mecanicos: countMecanicos, eletricistas: countEletricistas, pedreiros: countPedreiros, pintores: countPintores, soldadores: countSoldadores};
+    }
+    if (parentKey === 8) {
+    return { mecanicos: countMecanicos, analistas: countAnalistas, torneiros: countTorneiros, estagiarios: countEstagiarios};
+    }
+    if (parentKey === 4) {
+    return {mecanicos: countMecanicos, eletricistas: countEletricistas, torneiros: countTorneiros, monitores: countMonitores, higienizadores: countHigienizadores};
+    }
+    if (parentKey === 78) {
+    return {analistas: countAnalistas, estagiarios: countEstagiarios};
+    }
+    return { mecanicos: countMecanicos, eletricistas: countEletricistas, supervisores: countSupervisores };
+  }
+
+  function recolherFuncionarios() {
+    console.log("Iniciando a função recolherFuncionarios");
+
+    diagram.startTransaction("Recolher Funcionarios");
+
+    diagram.nodes.each(function (node) {
+        console.log("Verificando o nó:", node.data);
+
+        if (node.data.key === 1) {
+            console.log("Expansão do nó raiz:", node.data);
+            node.expandTree(); 
+        } else {
+            if (node.isTreeExpanded) {
+                node.collapseTree(); 
+                console.log("Recolhido:", node.data);
+            } else {
+                console.log("O nó já está recolhido:", node.data);
+            }
+        }
+    });
+
+    diagram.commitTransaction("Recolher Funcionarios");
+    diagram.layoutDiagram(true); 
+}
+
+    diagram.model = new go.TreeModel(organogramaData );
+
+    diagram.addDiagramListener("InitialLayoutCompleted", function () {
+        console.log("Layout inicial completo. Chamando recolherFuncionarios.");
+        setTimeout(recolherFuncionarios, 100);  
+    });
+
+    function salvarDados() {
+    const dados = diagram.model.toJson(); 
+
+    console.log("Dados a serem enviados (raw):", dados);
+
+    fetch('https://wagnerjunior3121.github.io/Organograma/api/salvar', {
+        method: 'POST',
+        mode: 'cors',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ dados: JSON.parse(dados).nodeDataArray }) // Envia o array nodeDataArray
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Erro ao salvar dados do organograma');
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log(data.message); 
+    })
+    .catch(error => {
+        console.error('Erro ao salvar dados do organograma:', error);
+    });
+}
+
+    function gerarCorAleatoria() {
+      const letras = '0123456789ABCDEF';
+      let cor = '#';
+      for (let i = 0; i < 6; i++) {
+      cor += letras[Math.floor(Math.random() * 16)];
+      }
+      return cor;
+      }
+
+    function atualizarContagem() {
+      const uniqueNames = new Set();
+        diagram.model.nodeDataArray.forEach(node => {
+          uniqueNames.add(node.name);
+        });
+        
+        const totalFuncionarios = uniqueNames.size; 
+        document.getElementById('employeeCount').innerText = `Total de Funcionários: ${totalFuncionarios}`;
+      }
+function adicionarFuncionario(parentKey) {
+    if (!editable) return;  
+    if (!editableKeys.includes(parentKey)) return; 
+
+    const parentNode = diagram.model.findNodeDataForKey(parentKey);
+    const newKey = diagram.model.nodeDataArray.length + 1;
+    const newColor = parentNode.color;  
+    const newNodeData = {
+      key: newKey,
+      parent: parentKey,
+      name: "Nome do Funcionário",
+      title: "Função",
+      department: "Setor e Turno",
+      color: newColor
+    };
+
+    diagram.startTransaction("Adicionar Funcionário");
+    diagram.model.addNodeData(newNodeData);
+    diagram.commitTransaction("Adicionar Funcionário");
+
+    salvarDados();  
+    atualizarContagem();  
+  }
+
+  diagram.model = new go.TreeModel(organogramaData);
+  diagram.addModelChangedListener(function(e) {
+    if (e.modelChange === "nodeDataArray") {
+      e.changes.each(function(change) {
+        if (change instanceof go.Change) {
+          const nodeData = change.model.findNodeData(change.key);
+          if (nodeData && !editableKeys.includes(nodeData.key)) {
+            diagram.model.undo();
+          }
+        }
+      });
+    }
+  });
+
+  function removerFuncionario(node) {
+  if (!editable) return;
+  const parentKey = node.data.parent;
+  if (!editableKeys.includes(node.data.key) && !editableKeys.includes(parentKey)) {
+    return; 
+  }
+  diagram.model.removeNodeData(node.data);
+  salvarDados(); 
+  console.log("Removendo nó:", node.data);
+}
+
+      diagram.nodeTemplate = $(go.Node, "Spot",
+        $(go.Shape, "RoundedRectangle", {
+          fill: "#685b8c",
+          stroke: null,
+          strokeWidth: 0,
+          width: 250,
+          height: 60
+        }),
+	      $(go.Panel, "Auto",  
+          { 
+            alignment: go.Spot.TopLeft, 
+            alignmentFocus: go.Spot.TopLeft, 
+            margin: new go.Margin(10, 10, 0, 0) 
+          },
+          new go.Binding("visible", "key", function(key) {
+          return [2, 3, 4, 5, 6, 7, 8, 78].includes(key);
+          }),
+          $(go.Shape, "RoundedRectangle", { 
+            width: 43, 
+            height: 20, 
+            fill: "#000000" 
+          }),
+          $(go.TextBlock, { 
+            margin: 4, 
+            font: "bold 8pt sans-serif", 
+            stroke: "white" 
+          },
+          new go.Binding("text", "", function(node) {
+            const count = contarNos(node.key);
+            return "TTL: " + count;
+          }).ofObject())
+        ),
+        $(go.Shape, "Rectangle", {
+          fill: "white",
+          strokeWidth: 0,
+          width: 5,
+          alignment: go.Spot.Left,
+          alignmentFocus: go.Spot.Left,
+          stretch: go.GraphObject.Vertical,
+        }).bind(new go.Binding("fill", "color")),
+
+  $(go.Panel, "Horizontal",  
+  { alignment: go.Spot.Left, alignmentFocus: go.Spot.Right, margin: new go.Margin(0, 0, 0, 30) },
+  new go.Binding("visible", "key", function(key) {
+    return [2, 3, 4, 5, 6, 7, 8, 78].includes(key);
+  }),
+    $(go.Panel, "Auto",  
+      new go.Binding("visible", "key", function(key) {
+      return [2, 3, 4, 5, 6, 7, 8].includes(key);  
+      }),
+        $(go.Shape, "Rectangle", { width: 35, height: 20, fill: "#ffa500" }),
+        $(go.TextBlock, { margin: 2, font: "bold 10pt sans-serif", stroke: "black" },
+          new go.Binding("text", "", function(node) {
+            const counts = contarFuncionarios(node.key);
+            return "M: " + counts.mecanicos;
+          }).ofObject())
+      ),
+  $(go.Panel, "Auto",
+    { visible: false },  
+    new go.Binding("visible", "key", function(key) {
+      return [8, 78].includes(key);   
+    }),
+    $(go.Shape, "Rectangle", { width: 35, height: 20, fill: "#7a00eb" }),
+    $(go.TextBlock, { margin: 2, font: "bold 10pt sans-serif", stroke: "black" },
+      new go.Binding("text", "", function(node) {
+        const counts = contarFuncionarios(node.key);
+        return "A: " + counts.analistas;
+      }).ofObject())
+  ),
+
+  $(go.Panel, "Auto",
+    { visible: false },  
+    new go.Binding("visible", "key", function(key) {
+    return key === 78; 
+    }),
+    $(go.Shape, "Rectangle", { width: 35, height: 20, fill: "#00ff00" }),
+    $(go.TextBlock, { margin: 2, font: "bold 10pt sans-serif", stroke: "black" },
+      new go.Binding("text", "", function(node) {
+        const counts = contarFuncionarios(node.key);
+        return "ES: " + counts.estagiarios;
+      }).ofObject())
+  ), 
+  $(go.Panel, "Auto",
+    { visible: false },  
+    new go.Binding("visible", "key", function(key) {
+    return key === 4; 
+    }),
+    $(go.Shape, "Rectangle", { width: 35, height: 20, fill: "#ffff00" }),
+    $(go.TextBlock, { margin: 2, font: "bold 10pt sans-serif", stroke: "black" },
+      new go.Binding("text", "", function(node) {
+        const counts = contarFuncionarios(node.key);
+        return "MO: " + counts.monitores;
+      }).ofObject())
+  ), 
+  $(go.Panel, "Auto",
+    { visible: false },  
+    new go.Binding("visible", "key", function(key) {
+      return key === 7;  
+    }),
+    $(go.Shape, "Rectangle", { width: 35, height: 20, fill: "#e21b87" }),
+    $(go.TextBlock, { margin: 2, font: "bold 10pt sans-serif", stroke: "black" },
+      new go.Binding("text", "", function(node) {
+        const counts = contarFuncionarios(node.key);
+        return "PE: " + counts.pedreiros;
+      }).ofObject())
+  ), 
+  $(go.Panel, "Auto",
+    { visible: false },  
+    new go.Binding("visible", "key", function(key) {
+      return key === 7;  
+    }),
+    $(go.Shape, "Rectangle", { width: 35, height: 20, fill: "#964900" }),
+    $(go.TextBlock, { margin: 2, font: "bold 10pt sans-serif", stroke: "black" },
+      new go.Binding("text", "", function(node) {
+        const counts = contarFuncionarios(node.key);
+        return "SO: " + counts.soldadores;
+      }).ofObject())
+  ), 
+  $(go.Panel, "Auto",
+    { visible: false },  
+    new go.Binding("visible", "key", function(key) {
+      return key === 4; 
+    }),
+    $(go.Shape, "Rectangle", { width: 35, height: 20, fill: "#e31019" }),
+    $(go.TextBlock, { margin: 2, font: "bold 10pt sans-serif", stroke: "black" },
+      new go.Binding("text", "", function(node) {
+        const counts = contarFuncionarios(node.key);
+        return "H: " + counts.higienizadores;
+      }).ofObject())
+  ), 
+  $(go.Panel, "Auto",
+    { visible: false },  
+    new go.Binding("visible", "key", function(key) {
+      return key === 7;  
+    }),
+    $(go.Shape, "Rectangle", { width: 35, height: 20, fill: "#bee1cf" }),
+    $(go.TextBlock, { margin: 2, font: "bold 10pt sans-serif", stroke: "black" },
+      new go.Binding("text", "", function(node) {
+        const counts = contarFuncionarios(node.key);
+        return "PI: " + counts.pintores;
+      }).ofObject())
+  ), 
+    $(go.Panel, "Auto",
+    { visible: false },  
+    new go.Binding("visible", "key", function(key) {
+      return [8, 4].includes(key);   
+    }),
+    $(go.Shape, "Rectangle", { width: 35, height: 20, fill: "#dcb6f2" }),
+    $(go.TextBlock, { margin: 2, font: "bold 10pt sans-serif", stroke: "black" },
+      new go.Binding("text", "", function(node) {
+        const counts = contarFuncionarios(node.key);
+        return "T: " + counts.torneiros;
+      }).ofObject())
+  ),
+      $(go.Panel, "Auto",  
+      { visible: false },  
+      new go.Binding("visible", "key", function(key) {
+      return [2, 3, 4, 5, 6, 7].includes(key);  
+      }),
+        $(go.Shape, "Rectangle", { width: 35, height: 20, fill: "#4682b4" }),
+        $(go.TextBlock, { margin: 2, font: "bold 10pt sans-serif", stroke: "black" },
+          new go.Binding("text", "", function(node) {
+            const counts = contarFuncionarios(node.key);
+            return "E: " + counts.eletricistas;
+          }).ofObject())
+      )
+    ),
+    
+      $(go.Panel, "Auto",  
+      {
+      visible: false,  
+      alignment: go.Spot.Left, alignmentFocus:  go.Spot.Right
+      },
+      new go.Binding("visible", "key", function(key) {
+        return key === 1;
+      }),
+      $(go.Shape, "Rectangle", { width: 30, height: 20, fill: "#b200f9" }),
+      $(go.TextBlock, 
+        { 
+          margin: new go.Margin(0, 0, 0, 0), 
+          font: "bold 10pt sans-serif", 
+          stroke: "black",
+          wrap: go.TextBlock.None,  
+          overflow: go.TextBlock.Clip  
+        },
+        new go.Binding("text", "", function(part) {
+          const counts = contarFuncionarios(part.data.key);
+          return "S: " + counts.supervisores;
+        }).ofObject())
+    ),
+
+        $(go.Panel, "Vertical",
+        { margin: new go.Margin(5, 10, 5, 10) }, 
+        $(go.TextBlock, { 
+          font: "bold 10pt sans-serif", 
+          stroke: "white", 
+          editable: editable,
+          alignment: go.Spot.Left,
+          alignmentFocus: go.Spot.Left,
+          textAlign: "start"
+        }, new go.Binding("text", "name").makeTwoWay())
+        ,
+        
+        $(go.TextBlock, { 
+          font: "10pt sans -serif", 
+          stroke: "white", 
+          editable: editable,
+          alignment: go.Spot.Left,
+          alignmentFocus: go.Spot.Left,
+          textAlign: "start"
+        }, new go.Binding("text", "title").makeTwoWay()),
+        
+
+        $(go.Panel, "Auto",
+        { alignment: go.Spot.Left, alignmentFocus: go.Spot.Left },
+          $(go.Shape, "RoundedRectangle", {
+            fill: "lightgreen", 
+            strokeWidth: 0,
+            height: 20,  
+            stretch: go.GraphObject.Horizontal
+          }),
+          $(go.TextBlock, { 
+            font: "bold italic 9pt sans-serif", 
+            stroke: "darkgreen", 
+            editable: editable,
+            margin: 1,  
+            textAlign: "left"
+          }, new go.Binding("text", "department").makeTwoWay())
+        )
+        ), 
+
+        $("Button", {
+          alignment: go.Spot.Right,
+          alignmentFocus: go.Spot.Center,
+          click: function(e, obj) {
+            if (editable) {  
+            const nodeData = obj.part.data;
+            adicionarFuncionario(nodeData.key);
+          }
+        }
+        },
+          $(go.Shape, "PlusLine", { width: 8, height: 8, stroke: "black", strokeWidth: 2 }),
+          { background: "transparent", margin: 5 }
+        ),
+        $("TreeExpanderButton", {
+          width: 14,
+          height: 14,
+          alignment: go.Spot.Bottom,
+          alignmentFocus: go.Spot.Center,
+          "_treeExpandedFigure": "TriangleUp",
+          "_treeCollapsedFigure": "TriangleDown",
+          "ButtonBorder.fill": "white",
+          "ButtonBorder.stroke": "black",
+          "ButtonBorder.strokeWidth": 1,
+          "ButtonIcon.stroke": "black",
+          "ButtonIcon.strokeWidth": 2,
+          click: function (e, obj) {
+          const node = obj.part; 
+          if (node.isTreeExpanded) {
+            node.isTreeExpanded = false;
+          } else {
+            node.isTreeExpanded = true; 
+          }
+          e.handled = true; 
+        }
+      })
+    ),
+    diagram.model = new go.TreeModel(organogramaData);
+    
+    diagram.model.addChangedListener(function(e) {
+      if (e.isTransactionFinished) {
+        salvarDados();
+      }
+    });
+
+      diagram.contextMenu = $(go.Adornment);
+      diagram.contextMenu.add(
+        $(go.Panel, "Vertical",
+          $("ContextMenuButton",
+            $(go.TextBlock, { text: "Remover", font: "12pt sans-serif" }),
+            {
+              click: function(e, obj) {
+                if (editable) {  
+                const node = obj.part.adornedPart;
+                removerFuncionario(node);
+              }
+            }
+            }
+          ),
+          $("ContextMenuButton",
+      $(go.TextBlock, { text: "Ver Key", font: "12pt sans-serif" }),
+      {
+        click: function(e, obj) {
+          const node = obj.part.adornedPart;
+          alert(`Key deste funcionário: ${node.data.key}`);
+        }
+      }
+    )
+  )
+);
+
+
+      diagram.nodeTemplate.contextMenu = diagram.contextMenu;
+
+      diagram.linkTemplate = $(go.Link, go.Link.Orthogonal, { corner: 5 },
+        $(go.Shape, { strokeWidth: 3, stroke: "#555" })
+      );
+
+      diagram.model = new go.TreeModel(organogramaData);
+
+      salvarDados();
+      
+      atualizarContagem(); 
+
+      setInterval(salvarDados, 10000); 
+
+      console.log("Modelo carregado:", organogramaData);
+      console.log(`Node Key: ${node.key}, Title: ${node.title}`);
+    }
+  </script>
+</body>
+</html>

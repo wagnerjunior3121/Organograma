@@ -88,7 +88,7 @@ let organogramaData = [
     { key: 74, parent: 7, name: "Milton Santana", title: "Mecânico de Manutenção III", department: "Área Externa - 1º Turno", color: "cyan" },
     { key: 75, parent: 7, name: "Pedro José de Carvalho", title: "Pedreiro", department: "Área Externa - 1º Turno", color: "cyan" },
     { key: 76, parent: 7, name: "Sidnei Souza Galvão", title: "Pedreiro", department: "Área Externa - 1º Turno", color: "cyan" },
-    { key: 77, parent: 8, name: "Gustavo Gabriel Antonucci", title: "Analista de Manutenção JR", department: "Manutenção - 1º Turno", color: "cyan" },
+    { key: 77, parent: 8, name: "Gustavo Gabriel Antonucci", title: "Analista de Manutenção JR", department: "Manutenção - 1º Turno", color: "magenta" },
     { key: 78, parent: 1, name: "Cristiano Zavan", title: "Coordenador (CORP)", department: "Manutenção - 1º Turno", color: "black" },
     { key: 79, parent: 8, name: "Hugo da Cruz Siviero", title: "Analista de Manutenção JR", department: "Manutenção - 1º Turno", color: "magenta"  },
     { key: 80, parent: 8, name: "Luiz Antônio de Souza", title: "Torneiro I",  department: "Manutenção - 1º Turno", color: "magenta" },

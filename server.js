@@ -97,6 +97,7 @@ let organogramaData = [
     { key: 83, parent: 78, name: "Guilherme Silva Mussato Antunes", title: "Estagiário", department: "Manutenção - 1º Turno", color: "black" },
     { key: 84, parent: 78, name: "Gustavo Henrique Peres Martinelli", title: "Analista de Manutenção JR", department: "Manutenção - 1º Turno", color: "black" },
     { key: 85, parent: 8, name: "Jhonatan Willian dos Santos", title: "Analista de Manutenção JR", department: "Manutenção - 1º Turno", color: "magenta" },
+    { key: 86, parent: 4, name: "Ângelo Gabriel Lozano", title: "Auxiliar de Manutenção (Higienizador)", department: "Higienização - 3º Turno", color: "green" },    
   ];
 
   app.post('/api/salvar', (req, res) => {

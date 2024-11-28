@@ -63,6 +63,10 @@ app.post('/api/salvar', (req, res) => {
     }
 
     organogramaData = dados; 
+
+    // Adicionando log para verificar a chamada da função
+    console.log("Tentando salvar os dados:", organogramaData);
+
     saveOrganogramaData(organogramaData)
         .then(() => {
             res.status(200).json({ message: 'Dados salvos com sucesso!' });

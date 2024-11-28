@@ -422,7 +422,18 @@ function expandAll() {
         console.log("Layout inicial completo. Chamando recolherFuncionarios.");
         setTimeout(recolherFuncionarios, 100);  
     });
-
+	
+function saveOrganogramaData(data) {
+    return new Promise((resolve, reject) => {
+        fs.writeFile('organogramaData.json', JSON.stringify(data, null, 2), (err) => {
+            if (err) {
+                return reject(err);
+            }
+            resolve();
+        });
+    });
+}
+	
     function salvarDados() {
     const dados = diagram.model.toJson(); 
 

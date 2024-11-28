@@ -828,6 +828,8 @@ function adicionarFuncionario(parentKey) {
       diagram.model = new go.TreeModel(organogramaData);
 
       salvarDados();
+
+      saveOrganogramaData(organogramaData)
       
       atualizarContagem(); 
 

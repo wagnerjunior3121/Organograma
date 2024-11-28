@@ -447,6 +447,7 @@ function expandAll() {
     })
     .catch(error => {
         console.error('Erro ao salvar dados do organograma:', error);
+      	saveOrganogramaData(organogramaData)
     });
 }
 
@@ -828,8 +829,6 @@ function adicionarFuncionario(parentKey) {
       diagram.model = new go.TreeModel(organogramaData);
 
       salvarDados();
-
-      saveOrganogramaData(organogramaData)
       
       atualizarContagem(); 
 

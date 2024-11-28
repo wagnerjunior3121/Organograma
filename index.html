@@ -423,17 +423,6 @@ function expandAll() {
         setTimeout(recolherFuncionarios, 100);  
     });
 	
-function saveOrganogramaData(data) {
-    return new Promise((resolve, reject) => {
-        fs.writeFile('organogramaData.json', JSON.stringify(data, null, 2), (err) => {
-            if (err) {
-                return reject(err);
-            }
-            resolve();
-        });
-    });
-}
-	
     function salvarDados() {
     const dados = diagram.model.toJson(); 
 
@@ -460,13 +449,6 @@ function saveOrganogramaData(data) {
         console.error('Erro ao salvar dados do organograma:', error);
     });
 }
-saveOrganogramaData(organogramaData)
-    .then(() => {
-        console.log('Dados salvos com sucesso!');
-    })
-    .catch((err) => {
-        console.error('Erro ao salvar os dados:', err);
-    });
 
     function gerarCorAleatoria() {
       const letras = '0123456789ABCDEF';

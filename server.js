@@ -1,21 +1,22 @@
 const express = require('express');
 const dotenv = require('dotenv');
 const cors = require('cors');
-const fs = require('fs'); // Importa o módulo fs
+const fs = require('fs');
+const path = require('path'); // Importa o módulo path
 
 dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 10000;
+const organogramaDataPath = path.join(__dirname, 'organogramaData.json'); // Caminho correto
 
 app.use(cors());
 app.use(express.json());
 app.use(express.static('public'));
 
-// Função para carregar dados do arquivo JSON
 function loadOrganogramaData() {
     return new Promise((resolve, reject) => {
-        fs.readFile('organogramaData.json', 'utf8', (err, data) => {
+        fs.readFile(organogramaDataPath, 'utf8', (err, data) => {
             if (err) {
                 return reject(err);
             }
@@ -24,10 +25,9 @@ function loadOrganogramaData() {
     });
 }
 
-// Função para salvar dados no arquivo JSON
 function saveOrganogramaData(data) {
     return new Promise((resolve, reject) => {
-        fs.writeFile('organogramaData.json', JSON.stringify(data, null, 2), (err) => {
+        fs.writeFile(organogramaDataPath, JSON.stringify(data, null, 2), (err) => {
             if (err) {
                 return reject(err);
             }
@@ -36,14 +36,12 @@ function saveOrganogramaData(data) {
     });
 }
 
-// Carrega os dados ao iniciar o servidor
 let organogramaData = [];
 
-// Rota para carregar dados
 app.get('/api/carregar', (req, res) => {
     loadOrganogramaData()
         .then(data => {
-            organogramaData = data; // Atualiza a variável com dados carregados
+            organogramaData = data;
             res.status(200).json({ dados: organogramaData });
         })
         .catch(err => {
@@ -52,7 +50,6 @@ app.get('/api/carregar', (req, res) => {
         });
 });
 
-// Rota para salvar dados
 app.post('/api/salvar', (req, res) => {
     const { dados } = req.body;
 
@@ -62,9 +59,8 @@ app.post('/api/salvar', (req, res) => {
         return res.status(400).json({ message: 'Dados inválidos!' });
     }
 
-    organogramaData = dados; 
+    organogramaData = dados;
 
-    // Adicionando log para verificar a chamada da função
     console.log("Tentando salvar os dados:", organogramaData);
 
     saveOrganogramaData(organogramaData)
@@ -77,7 +73,6 @@ app.post('/api/salvar', (req, res) => {
         });
 });
 
-// Rota para obter usuários
 app.get('/users', (req, res) => {
     const users = [
         { username: process.env.USERNAME_CRISTIANO, password: process.env.PASSWORD_CRISTIANO },
@@ -93,7 +88,6 @@ app.get('/users', (req, res) => {
     res.json(users);
 });
 
-// Inicia o servidor
 app.listen(PORT, () => {
     console.log(`Servidor rodando na porta ${PORT}`);
 });

@@ -449,6 +449,13 @@ function expandAll() {
         console.error('Erro ao salvar dados do organograma:', error);
     });
 }
+saveOrganogramaData(organogramaData)
+    .then(() => {
+        console.log('Dados salvos com sucesso!');
+    })
+    .catch((err) => {
+        console.error('Erro ao salvar os dados:', err);
+    });
 
     function gerarCorAleatoria() {
       const letras = '0123456789ABCDEF';

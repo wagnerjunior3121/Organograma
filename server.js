@@ -2,13 +2,13 @@ const express = require('express');
 const dotenv = require('dotenv');
 const cors = require('cors');
 const fs = require('fs');
-const path = require('path');
+const path = require('path'); // Importa o módulo path
 
 dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 10000;
-const organogramaDataPath = path.join(__dirname, 'organogramaData.json');
+const organogramaDataPath = path.join(__dirname, 'organogramaData.json'); // Caminho correto
 
 app.use(cors());
 app.use(express.json());
@@ -29,7 +29,6 @@ function saveOrganogramaData(data) {
     return new Promise((resolve, reject) => {
         fs.writeFile(organogramaDataPath, JSON.stringify(data, null, 2), (err) => {
             if (err) {
-                console.error('Erro ao salvar dados:', err); // Log do erro
                 return reject(err);
             }
             resolve();
@@ -72,6 +71,21 @@ app.post('/api/salvar', (req, res) => {
             console.error('Erro ao salvar dados:', err);
             res.status(500).json({ message: 'Erro ao salvar dados' });
         });
+});
+
+app.get('/users', (req, res) => {
+    const users = [
+        { username: process.env.USERNAME_CRISTIANO, password: process.env.PASSWORD_CRISTIANO },
+        { username: process.env.USERNAME_TIAGOP, password: process.env.PASSWORD_TIAGOP },
+        { username: process.env.USERNAME_FERNANDO, password: process.env.PASSWORD_FERNANDO },
+        { username: process.env.USERNAME_LINDOMAR, password: process.env.PASSWORD_LINDOMAR },
+        { username: process.env.USERNAME_LUCAS, password: process.env.PASSWORD_LUCAS },
+        { username: process.env.USERNAME_PAULO, password: process.env.PASSWORD_PAULO },
+        { username: process.env.USERNAME_STEFANO, password: process.env.PASSWORD_STEFANO },
+        { username: process.env.USERNAME_TIAGOROBERTO, password: process.env.PASSWORD_TIAGOROBERTO },
+    ];
+    
+    res.json(users);
 });
 
 app.listen(PORT, () => {

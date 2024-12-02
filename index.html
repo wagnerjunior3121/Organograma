@@ -423,7 +423,7 @@ function expandAll() {
         setTimeout(recolherFuncionarios, 100);  
     });
 	
-    function salvarDados() {
+function salvarDados() {
     const dados = diagram.model.toJson(); 
 
     console.log("Dados a serem enviados (raw):", dados);
@@ -444,12 +444,14 @@ function expandAll() {
     })
     .then(data => {
         console.log(data.message); 
+        // Aqui você pode adicionar uma notificação ou atualizar a interface
     })
     .catch(error => {
         console.error('Erro ao salvar dados do organograma:', error);
-      	saveOrganogramaData(organogramaData)
+        // Aqui você pode adicionar lógica para lidar com falhas, se necessário
     });
 }
+
 
     function gerarCorAleatoria() {
       const letras = '0123456789ABCDEF';

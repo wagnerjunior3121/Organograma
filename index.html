@@ -92,6 +92,32 @@
   <div id="myDiagramDiv"></div>
 <script>
 
+const { Pool } = require('pg');
+
+// Configurar a conexão usando as credenciais do Render
+const pool = new Pool({
+    connectionString: process.env.DATABASE_URL, // Armazene a URL no .env
+    ssl: {
+        rejectUnauthorized: false // Necessário para conexões seguras
+    }
+});
+
+// Testar a conexão
+pool.connect()
+    .then(() => console.log('Conectado ao banco de dados com sucesso!'))
+    .catch(err => console.error('Erro ao conectar ao banco:', err));
+
+// Consultas simples
+async function salvarDados(dados) {
+    try {
+        await pool.query('INSERT INTO organograma (dados) VALUES ($1)', [JSON.stringify(dados)]);
+        console.log('Dados salvos no banco!');
+    } catch (err) {
+        console.error('Erro ao salvar dados:', err);
+    }
+}
+
+
 fetch('https://organograma.onrender.com/api/carregar')
   .then(response => {
     if (!response.ok) {

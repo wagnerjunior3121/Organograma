@@ -92,22 +92,6 @@
   <div id="myDiagramDiv"></div>
 <script>
 
-// Testar a conexão
-pool.connect()
-    .then(() => console.log('Conectado ao banco de dados com sucesso!'))
-    .catch(err => console.error('Erro ao conectar ao banco:', err));
-
-// Consultas simples
-async function salvarDados(dados) {
-    try {
-        await pool.query('INSERT INTO organograma (dados) VALUES ($1)', [JSON.stringify(dados)]);
-        console.log('Dados salvos no banco!');
-    } catch (err) {
-        console.error('Erro ao salvar dados:', err);
-    }
-}
-
-
 fetch('https://organograma.onrender.com/api/carregar')
   .then(response => {
     if (!response.ok) {
@@ -220,7 +204,7 @@ function validateLogin() {
     document.getElementById('loginError').style.display = "block"; 
   }
 }
-	
+
 function enterViewMode() {
     document.getElementById('loginModal').style.display = "none";  
     document.getElementById('myDiagramDiv').style.display = "block";  
@@ -238,7 +222,7 @@ window.onload = function() {
 };
 
 let diagram; 
-	
+
 function init(editable, editableKeys = [], canAddEmployees = false) {
     const $ = go.GraphObject.make;
 
@@ -439,7 +423,7 @@ function expandAll() {
         setTimeout(recolherFuncionarios, 100);  
     });
 	
-function salvarDados() {
+    function salvarDados() {
     const dados = diagram.model.toJson(); 
 
     console.log("Dados a serem enviados (raw):", dados);
@@ -460,14 +444,12 @@ function salvarDados() {
     })
     .then(data => {
         console.log(data.message); 
-        // Aqui você pode adicionar uma notificação ou atualizar a interface
     })
     .catch(error => {
         console.error('Erro ao salvar dados do organograma:', error);
-        // Aqui você pode adicionar lógica para lidar com falhas, se necessário
+      	saveOrganogramaData(organogramaData)
     });
 }
-
 
     function gerarCorAleatoria() {
       const letras = '0123456789ABCDEF';

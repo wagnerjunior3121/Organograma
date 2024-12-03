@@ -92,6 +92,8 @@
   <div id="myDiagramDiv"></div>
 <script>
 
+let diagram; 
+
 const { Pool } = require('pg');
 
 // Configurar a conexão usando as credenciais do Render
@@ -230,9 +232,7 @@ function validateLogin() {
     document.getElementById('loginError').style.display = "block"; 
   }
 }
-
-let diagram; 
-
+	
 function enterViewMode() {
     document.getElementById('loginModal').style.display = "none";  
     document.getElementById('myDiagramDiv').style.display = "block";  

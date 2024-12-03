@@ -92,14 +92,6 @@
   <div id="myDiagramDiv"></div>
 <script>
 
-// Configurar a conexão usando as credenciais do Render
-const pool = new Pool({
-    connectionString: process.env.DATABASE_URL, // Armazene a URL no .env
-    ssl: {
-        rejectUnauthorized: false // Necessário para conexões seguras
-    }
-});
-
 // Testar a conexão
 pool.connect()
     .then(() => console.log('Conectado ao banco de dados com sucesso!'))

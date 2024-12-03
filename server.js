@@ -23,6 +23,7 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static('public'));
 
+let organogramaData = [];
 
 // Endpoint para carregar os dados
 app.get('/api/carregar', async (req, res) => {

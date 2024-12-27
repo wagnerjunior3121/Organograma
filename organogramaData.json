@@ -60,7 +60,6 @@
     { "key": 59, "parent": 7, "name": "Antônio Fernandes Camargo", "title": "Pedreiro", "department": "Área Externa - 1º Turno", "color": "cyan" },
     { "key": 60, "parent": 7, "name": "Bruno Aparecido Camilo de Carvalho", "title": "Eletricista III", "department": "Área Externa - 1º Turno (12/36)", "color": "cyan" },
     { "key": 61, "parent": 7, "name": "Daniel de Carvalho", "title": "Mecânico de Manutenção I", "department": "Área Externa - 1º Turno", "color": "cyan" },
-    { "key": 62, "parent": 7, "name": "Edevair Simplicio", "title": "Pedreiro", "department": "Área Externa - 1º Turno", "color": "cyan" },
     { "key": 63, "parent": 7, "name": "Edson Luis Modesto", "title": "Mecânico de Manutenção III", "department": "Área Externa - 1º Turno", "color": "cyan" },
     { "key": 64, "parent": 7, "name": "Eli Frank Bernardo Rodrigues", "title": "Pintor", "department": "Área Externa - 1º Turno", "color": "cyan" },
     { "key": 65, "parent": 7, "name": "Francisco Bernardo", "title": "Soldador", "department": "Área Externa - 1º Turno", "color": "cyan" },

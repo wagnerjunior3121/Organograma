@@ -36,7 +36,6 @@
     { "key": 35, "parent": 4, "name": "José Justino dos Santos", "title": "Mecânico de Manutenção II", "department": "Semi-Acabado - 3° Turno", "color": "green" },
     { "key": 36, "parent": 4, "name": "Kleberson Henrique Meira", "title": "Mecânico de Manutenção II", "department": "Semi-Acabado - 3° Turno", "color": "green" },
     { "key": 37, "parent": 4, "name": "Marcos Rodrigues Miller", "title": "Torneiro II", "department": "Tornearia - 3º Turno", "color": "green" },
-    { "key": 38, "parent": 4, "name": "Matheus Brant dos Santos", "title": "Auxiliar de Manutenção (Higienizador)", "department": "Higienização - 3º Turno", "color": "green" },
     { "key": 39, "parent": 4, "name": "Michael Daves Gomes Ferreira", "title": "Mecânico de Manutenção II", "department": "Semi-Acabado - 3º Turno", "color": "green" },
     { "key": 40, "parent": 4, "name": "Ricardo Luis Estevo", "title": "Mecânico de Manutenção III", "department": "Semi-Acabado - 3º Turno", "color": "green" },
     { "key": 41, "parent": 4, "name": "Wilton Cesar Neves Costa", "title": "Auxiliar de Manutenção (Higienizador)", "department": "Higienização - 3º Turno", "color": "green" },

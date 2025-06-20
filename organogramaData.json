@@ -1,8 +1,8 @@
 [
     { "key": 1, "name": "Cristiano Zavan", "title": "Coordenador", "department": "Manutenção", "color": "white" },
     { "key": 2, "parent": 1, "name": "Fernando Barbeiro", "title": "Supervisor - Planta Trio", "department": "Manutenção - 2° Turno", "color": "red" },
-    { "key": 3, "parent": 1, "name": "Lindomar Freire", "title": "Supervisor - Semi-Acabado", "department": "Manutenção - 2° Turno", "color": "blue" },
-    { "key": 4, "parent": 1, "name": "Sebastião Salvador ", "title": "Supervisor", "department": "Manutenção - 3° Turno", "color": "green" },
+    { "key": 3, "parent": 1, "name": "Sebastião Salvador", "title": "Supervisor - Semi-Acabado", "department": "Manutenção - 2° Turno", "color": "blue" },
+    { "key": 4, "parent": 1, "name": "Thiago Mendes", "title": "Supervisor", "department": "Manutenção - 3° Turno", "color": "green" },
     { "key": 5, "parent": 1, "name": "Paulo Roberto", "title": "Supervisor - Planta Trio", "department": "Manutenção - 1° Turno", "color": "purple" },
     { "key": 6, "parent": 1, "name": "Lucas Cruzeiro", "title": "Supervisor - Semi-Acabado", "department": "Manutenção - 1° Turno", "color": "orange" },
     { "key": 7, "parent": 1, "name": "Tiago Roberto", "title": "Supervisor - Área Externa", "department": "Manutenção - 1° Turno", "color": "cyan" },

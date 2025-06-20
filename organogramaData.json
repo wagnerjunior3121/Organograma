@@ -75,7 +75,6 @@
     { "key": 76, "parent": 7, "name": "Sidnei Souza Galvão", "title": "Pedreiro", "department": "Área Externa - 1º Turno", "color": "cyan" },
     { "key": 79, "parent": 8, "name": "Guilherme Silva Mussato Antunes", "title": "Analista de Manutenção JR", "department": "Manutenção - 1º Turno", "color": "magenta"  },
     { "key": 80, "parent": 8, "name": "Luiz Antônio de Souza", "title": "Torneiro I",  "department": "Manutenção - 1º Turno", "color": "magenta" },
-    { "key": 81, "parent": 3, "name": "Thiago Aparecido Mendes", "title": "Torneiro I", "department": "Manutenção - 2º Turno", "color": "Red" },
     { "key": 82, "parent": 8, "name": "Vagner da Silva", "title": "Mecânico de Manutenção I", "department": "Manutenção - 1º Turno", "color": "magenta" },
     { "key": 86, "parent": 4, "name": "Ângelo Gabriel Lozano", "title": "Auxiliar de Manutenção (Higienizador)", "department": "Higienização - 3º Turno", "color": "green" },
     { "key": 87, "parent": 8, "name": "Kelen Savana da Silva Peixoto", "title": "Analista de Manutenção JR", "department": "Manutenção - 1º Turno", "color": "magenta" },

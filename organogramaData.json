@@ -83,5 +83,5 @@
     { "key": 89, "parent": 6, "name": "Vitor Hugo Nasimbem", "title": "Auxiliar de Manutenção", "department": "Manutenção - 1º Turno", "color": "orange" },
     { "key": 90, "parent": 8, "name": "Wagner Santos Oliveira Junior", "title": "Assistente de Manutenção", "department": "Manutenção - 1º Turno", "color": "magenta"  },
     { "key": 91, "parent": 8, "name": "Natasha Tayna Da Silva Conceicão", "title": "Analista de Manutenção JR", "department": "Manutenção - 1º Turno", "color": "magenta"  },
-    { "key": 92, "parent": 3, "name": "Natanael Roberto Da Silva", "title": "Auxiliar de Manutenção", "department": "Manutenção - 2° Turno", "color": "blue" },
+    { "key": 92, "parent": 3, "name": "Natanael Roberto Da Silva", "title": "Auxiliar de Manutenção", "department": "Manutenção - 2° Turno", "color": "blue" }
   ]
